@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Earth Weather</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- Three.js canvas fills the entire viewport -->
+  <canvas id="globe-canvas"></canvas>
+
+  <!-- Radial vignette darkens the edges so UI pops -->
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- All UI elements sit above the canvas -->
+  <div class="ui-layer">
+
+    <!-- Top bar -->
+    <header class="top-bar">
+      <div class="brand">
+        <span class="brand-pulse" aria-hidden="true"></span>
+        <span class="brand-name">EARTH WEATHER</span>
+      </div>
+      <p class="controls-hint">Drag to rotate &nbsp;·&nbsp; Scroll to zoom</p>
+    </header>
+
+    <!-- Search pill -->
+    <section class="search-section" aria-label="City search">
+      <div class="search-pill" id="searchPill">
+        <svg class="sp-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          type="text"
+          id="cityInput"
+          placeholder="Search any city on Earth…"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="City name"
+        />
+        <button id="searchBtn" class="sp-btn" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Fetching indicator (centred on screen) -->
+    <div class="fetch-loader" id="fetchLoader" hidden aria-live="polite" aria-label="Loading weather data">
+      <div class="fl-rings">
+        <div class="fl-ring"></div>
+        <div class="fl-ring"></div>
+        <div class="fl-ring"></div>
+        <div class="fl-core"></div>
+      </div>
+      <p class="fl-label">Locating city…</p>
+    </div>
+
+    <!-- Error toast -->
+    <div class="error-toast" id="errorToast" hidden role="alert">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <span id="errorMsg">City not found</span>
+    </div>
+
+    <!-- Weather card (slides up from bottom) -->
+    <article class="weather-card" id="weatherCard" hidden aria-label="Current weather">
+
+      <button class="wc-close" id="wcClose" aria-label="Close weather card">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+
+      <div class="wc-body">
+
+        <!-- Left — city / country / condition -->
+        <div class="wc-left">
+          <h2 class="wc-city" id="wcCity">—</h2>
+          <p class="wc-country" id="wcCountry">—</p>
+          <p class="wc-cond" id="wcCond">—</p>
+          <p class="wc-date" id="wcDate">—</p>
+        </div>
+
+        <!-- Centre — icon + temperature -->
+        <div class="wc-centre">
+          <img class="wc-icon" id="wcIcon" src="" alt="Weather icon" />
+          <span class="wc-temp" id="wcTemp">—</span>
+          <span class="wc-feels">Feels like <strong id="wcFeels">—</strong></span>
+        </div>
+
+        <!-- Right — stat grid -->
+        <div class="wc-stats">
+          <div class="wc-stat">
+            <span class="wcs-label">Humidity</span>
+            <span class="wcs-value" id="wcHumidity">—</span>
+          </div>
+          <div class="wc-stat">
+            <span class="wcs-label">Wind</span>
+            <span class="wcs-value" id="wcWind">—</span>
+          </div>
+          <div class="wc-stat">
+            <span class="wcs-label">High / Low</span>
+            <span class="wcs-value" id="wcRange">—</span>
+          </div>
+          <div class="wc-stat">
+            <span class="wcs-label">Pressure</span>
+            <span class="wcs-value" id="wcPressure">—</span>
+          </div>
+          <div class="wc-stat">
+            <span class="wcs-label">Visibility</span>
+            <span class="wcs-value" id="wcVisibility">—</span>
+          </div>
+          <div class="wc-stat">
+            <span class="wcs-label">Sunrise · Sunset</span>
+            <span class="wcs-value" id="wcSun">—</span>
+          </div>
+        </div>
+
+      </div>
+    </article>
+
+  </div><!-- /.ui-layer -->
+
+  <!-- Three.js r134 global build (works when opened as a local file) -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
